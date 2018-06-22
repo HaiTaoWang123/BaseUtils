@@ -1,15 +1,16 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'maven'
+apply plugin: 'com.novoda.bintray-release'
 
-group = 'com.github.HaitaoWang'
 
 android {
     compileSdkVersion 26
+    buildToolsVersion '27.0.3'
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+        versionCode rootProject.ext.android.versionCode
+        versionName rootProject.ext.android.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -21,9 +22,30 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation rootProject.ext.dependencies.appcompatv7
+    testImplementation rootProject.ext.dependencies.junit
+    implementation rootProject.ext.dependencies.testRunner
+    implementation rootProject.ext.dependencies.espressoCore
+    //    implementation 'com.github.haitaow:MyBaseUtils:1.0.6'
+    //    implementation 'baseutils.haitaow.com.mylibrary:mylibrary:1.0.0'
+}
+
+/**
+ * 上传到jCenter的核心配置
+ */
+publish {
+    userOrg = 'wht1528779372'
+    repoName = 'maven'
+    groupId = 'com.haitaow.baseutils'
+    artifactId = 'baseutils'
+    publishVersion = rootProject.ext.android.versionName
+    desc = 'This is my first jCenter library'
+    website = "https://github.com/HaiTaoWang123/BaseUtils"
+}
+
+tasks.withType(Javadoc) {//防止编码问题
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
 }
